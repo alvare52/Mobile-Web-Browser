@@ -59,7 +59,6 @@
 		1BB83C36261428FB007498D2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1BB83C5226163D80007498D2 /* URL+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Extension.swift"; sourceTree = "<group>"; };
 		1BB83C5726163DC5007498D2 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
-		1BB83C65261656DE007498D2 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,7 +89,6 @@
 		1BB83BE02613962E007498D2 = {
 			isa = PBXGroup;
 			children = (
-				1BB83C65261656DE007498D2 /* README.md */,
 				1BB83BEB2613962F007498D2 /* Acme */,
 				1BB83C23261428BB007498D2 /* AcmeTests */,
 				1BB83C33261428FB007498D2 /* AcmeUITests */,

@@ -44,6 +44,9 @@ class BrowserViewController: UIViewController {
     /// Holds last search term
     var lastSearch = ""
     
+    /// UIBarButtonItem used to display more options
+    var moreButton: UIBarButtonItem!
+    
     /// UIBarButtonItem used to open new tab
     var openNewTabButton: UIBarButtonItem!
     
@@ -119,6 +122,28 @@ class BrowserViewController: UIViewController {
         
         navigationController?.isToolbarHidden = false
         webView.scrollView.delegate = self
+        
+        // More Menu
+        let moreMenu = UIMenu(title: "", children: [
+            
+            UIAction(title: "Bing", image: UIImage(systemName: "magnifyingglass")) { action in
+                print("tapped Bing option")
+            },
+            UIAction(title: "DuckDuckGo", image: UIImage(systemName: "magnifyingglass")) { action in
+                print("tapped DDG option")
+            },
+            UIAction(title: "Google", image: UIImage(systemName: "magnifyingglass")) { action in
+                print("tapped Google option")
+            },
+            UIAction(title: "Yahoo", image: UIImage(systemName: "magnifyingglass")) { action in
+                print("tapped Yahoo option")
+            },
+            
+        ])
+        
+        // More Button
+        moreButton = UIBarButtonItem(image: UIImage(systemName: "book"), primaryAction: nil, menu: moreMenu)
+        navigationItem.rightBarButtonItem = moreButton
     }
     
     /// Adds basic controls to toolbar
@@ -311,6 +336,21 @@ extension BrowserViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let searchTerm = searchBar.text else { return }
         performSearch(searchTerm: searchTerm)
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        print("did begin editing")
+        searchBar.showsCancelButton = true
+    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        print("did end editing")
+        searchBar.showsCancelButton = false
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        print("cancel button clicked")
+        searchBar.resignFirstResponder()
     }
 }
 
