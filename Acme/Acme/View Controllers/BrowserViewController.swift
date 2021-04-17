@@ -75,6 +75,17 @@ class BrowserViewController: UIViewController {
         return bar
     }()
     
+    /// Enum that represents which search engine to use. Default is .Google. didSet will call makeMenuForButton()
+    var searchEngine: SearchEngine = .Google {
+        didSet {
+            print("didSet searchEngine")
+            makeMenuForMoreButton()
+        }
+    }
+    
+    /// First half of url string that contains selected search engine. Default is https://www.google.com/search?q=
+    var searchEngineString = "https://www.google.com/search?q="
+    
     /// UIBarButtonItem used to switch tabs
     var tabsButton: UIBarButtonItem!
     
@@ -86,6 +97,43 @@ class BrowserViewController: UIViewController {
     }()
     
     // MARK: - View Life Cycle
+    
+    /// Gives moreButton its menu by first checking which search engine option is selected. Selecting menu option will set new value for search engine key
+    private func makeMenuForMoreButton() {
+        print("makeMenuForMoreButton")
+        let bingImage = searchEngine == .Bing ? UIImage(systemName: "checkmark") : nil
+        let duckImage = searchEngine == .DuckDuckGo ? UIImage(systemName: "checkmark") : nil
+        let googleImage = searchEngine == .Google ? UIImage(systemName: "checkmark") : nil
+        let yahooImage = searchEngine == .Yahoo ? UIImage(systemName: "checkmark") : nil
+        
+        let menu = UIMenu(title: "Search Engine", children: [
+            
+            UIAction(title: "Bing", image: bingImage) { action in
+                print("tapped Bing option")
+                self.searchEngine = .Bing
+                self.searchEngineString = "https://www.bing.com/search?q="
+            },
+            UIAction(title: "DuckDuckGo", image: duckImage) { action in
+                print("tapped DDG option")
+                self.searchEngine = .DuckDuckGo
+                self.searchEngineString = "https://duckduckgo.com/?q="
+            },
+            UIAction(title: "Google", image: googleImage) { action in
+                print("tapped Google option")
+                self.searchEngine = .Google
+                self.searchEngineString = "https://www.google.com/search?q="
+            },
+            UIAction(title: "Yahoo", image: yahooImage) { action in
+                print("tapped Yahoo option")
+                self.searchEngine = .Yahoo
+                self.searchEngineString = "https://search.yahoo.com/search?p="
+            },
+            
+        ])
+        // save selected search engine
+        UserDefaults.standard.setValue(self.searchEngine.rawValue, forKey: .searchEngineString)
+        moreButton.menu = menu
+    }
     
     /// Adds basic controls to navigation bar
     private func setupNavigationBar() {
@@ -117,33 +165,36 @@ class BrowserViewController: UIViewController {
                                         target: self,
                                         action: #selector(reloadWebView))
         refreshButton.tintColor = .customTintColor
-        navigationItem.leftBarButtonItem = refreshButton
-        navigationItem.leftBarButtonItem?.image = UIImage(systemName: "arrow.clockwise")
+        navigationItem.rightBarButtonItem = refreshButton
+        navigationItem.rightBarButtonItem?.image = UIImage(systemName: "arrow.clockwise")
         
         navigationController?.isToolbarHidden = false
+        navigationController?.toolbar.isTranslucent = false
         webView.scrollView.delegate = self
         
-        // More Menu
-        let moreMenu = UIMenu(title: "", children: [
-            
-            UIAction(title: "Bing", image: UIImage(systemName: "magnifyingglass")) { action in
-                print("tapped Bing option")
-            },
-            UIAction(title: "DuckDuckGo", image: UIImage(systemName: "magnifyingglass")) { action in
-                print("tapped DDG option")
-            },
-            UIAction(title: "Google", image: UIImage(systemName: "magnifyingglass")) { action in
-                print("tapped Google option")
-            },
-            UIAction(title: "Yahoo", image: UIImage(systemName: "magnifyingglass")) { action in
-                print("tapped Yahoo option")
-            },
-            
-        ])
-        
         // More Button
-        moreButton = UIBarButtonItem(image: UIImage(systemName: "book"), primaryAction: nil, menu: moreMenu)
-        navigationItem.rightBarButtonItem = moreButton
+        moreButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"))
+        moreButton.tintColor = .customTintColor
+        setupSearchEnginePreference()
+        navigationItem.leftBarButtonItem = moreButton
+    }
+        
+    /// Sets search engine menu options and internal searchEngineString for searches that don't contain complete urls
+    private func setupSearchEnginePreference() {
+        
+        let searchEngineRawValue = UserDefaults.standard.integer(forKey: .searchEngineString)
+        searchEngine = SearchEngine(rawValue: searchEngineRawValue) ?? .Google
+        
+        switch searchEngineRawValue {
+        case 1:
+            searchEngineString = "https://www.bing.com/search?q="
+        case 2:
+            searchEngineString = "https://duckduckgo.com/?q="
+        case 3:
+            searchEngineString = "https://search.yahoo.com/search?p="
+        default:
+            searchEngineString = "https://www.google.com/search?q="
+        }
     }
     
     /// Adds basic controls to toolbar
@@ -226,15 +277,17 @@ class BrowserViewController: UIViewController {
     
     // MARK: - Helpers
         
-    /// Takes in an invalid search and just Googles it
+    /// Takes in an invalid search and performs a search using selected search engine + search term
     private func fallBackSearch(searchTerm: String) {
         let cleanTerm = searchTerm.replacingOccurrences(of: " ", with: "+")
-        guard let googleSearchUrl = URL(string: "https://www.google.com/search?q=\(cleanTerm)") else {
+        print("fallBackSearch, searchEngineString = \(searchEngineString), cleanTerm = \(cleanTerm)")
+        guard let searchUrl = URL(string: searchEngineString + cleanTerm) else {
             print("invalid search, exitting")
             webView.stopLoading()
             return
         }
-        webView.load(URLRequest(url: googleSearchUrl))
+        print("searchURL\(searchUrl)")
+        webView.load(URLRequest(url: searchUrl))
     }
     
     /// Goes back to previous page and updates search text
