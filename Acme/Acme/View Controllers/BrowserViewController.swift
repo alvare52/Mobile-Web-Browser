@@ -15,8 +15,8 @@ class BrowserViewController: UIViewController {
     /// UIBarButtonItem used to go back to previous page
     var backButton: UIBarButtonItem!
     
-    /// Bookmark of current webpage. Starts out as Neeva home page
-    var bookmark = Bookmark(url: URL(string: "https://neeva.co/")!, urlTitle: "Ad-free, private search - Neeva") {
+    /// Bookmark of current webpage. Starts out as Google home page
+    var bookmark = Bookmark(url: .defaultURL, urlTitle: "Google") {
         didSet {
             // Update tab (if it's in tabs)
             if bookmarksController.tabs.contains(oldValue) {
