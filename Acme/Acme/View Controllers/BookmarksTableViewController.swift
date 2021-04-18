@@ -10,6 +10,9 @@ import UIKit
 protocol NewPageDelegate {
     /// Tells BrowswerViewController to open this url
     func didSelectUrl(url: URL)
+    
+    /// Tells BrowserViewController to update its tabButton image
+    func didAddOrDeleteTab()
 }
 
 class BookmarksTableViewController: UITableViewController {
@@ -85,6 +88,7 @@ class BookmarksTableViewController: UITableViewController {
         else {
             openTabOrBookmark(url: .defaultURL)
             bookmarksController.addTab(newTab: bookmark)
+            newPageDelegate?.didAddOrDeleteTab()
         }
     }
     
@@ -140,7 +144,7 @@ class BookmarksTableViewController: UITableViewController {
             }
 
             tableView.deleteRows(at: [indexPath], with: .fade)
-
+            newPageDelegate?.didAddOrDeleteTab()
         }
     }
 

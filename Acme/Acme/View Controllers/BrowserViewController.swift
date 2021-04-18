@@ -229,11 +229,12 @@ class BrowserViewController: UIViewController {
         bookmarksButton.tintColor = .customTintColor
         
         // Tabs
-        tabsButton = UIBarButtonItem(image: UIImage(systemName: "square.on.square"),
+        tabsButton = UIBarButtonItem(image: UIImage(systemName: "1.square"),
                                         style: .plain,
                                         target: self,
                                         action: #selector(switchTabs))
         tabsButton.tintColor = .customTintColor
+        updateTabsButton()
         
         // Spacer
         let space = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
@@ -320,6 +321,7 @@ class BrowserViewController: UIViewController {
         bookmarksController.addTab(newTab: bookmark)
         performSearch(searchTerm: "\(URL.defaultURL)")
         backButton.isEnabled = false
+        updateTabsButton()
     }
         
     /// Called when tapping go in searchBar or when selecting a bookmark/tab
@@ -374,6 +376,19 @@ class BrowserViewController: UIViewController {
     /// Presents Tabs section
     @objc func switchTabs() {
         presentBookmarksOrTabs(bookmarksMode: false)
+    }
+    
+    /// Updates tabsButton image to reflect how many tabs are open
+    private func updateTabsButton() {
+        let count = bookmarksController.tabs.count
+        switch count {
+        case 0:
+            tabsButton.image = UIImage(systemName: "1.square")
+        case 1...50:
+            tabsButton.image = UIImage(systemName: "\(count).square")
+        default:
+            tabsButton.image = UIImage(systemName: "square.on.square")
+        }
     }
     
     /// Presents Bookmarks section
@@ -432,6 +447,11 @@ extension BrowserViewController: WKNavigationDelegate {
 // MARK: - NewPageDelegate
 
 extension BrowserViewController: NewPageDelegate {
+    
+    /// Updates tabsButton to reflect how many tabs are open
+    func didAddOrDeleteTab() {
+        updateTabsButton()
+    }
     
     /// Load new web page when called
     func didSelectUrl(url: URL) {
