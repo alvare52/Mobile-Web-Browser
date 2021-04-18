@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		1B8657A5262B6AF7006E2263 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8657A4262B6AF7006E2263 /* String+Extension.swift */; };
 		1B8657AA262B6B1B006E2263 /* SearchEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8657A9262B6B1B006E2263 /* SearchEngine.swift */; };
+		1B8657AF262C958A006E2263 /* TabCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8657AE262C958A006E2263 /* TabCollectionViewCell.swift */; };
+		1B8657B4262C9965006E2263 /* TabsCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8657B3262C9965006E2263 /* TabsCollectionViewController.swift */; };
 		1BB83BED2613962F007498D2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BB83BEC2613962F007498D2 /* AppDelegate.swift */; };
 		1BB83BEF2613962F007498D2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BB83BEE2613962F007498D2 /* SceneDelegate.swift */; };
 		1BB83BF42613962F007498D2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1BB83BF22613962F007498D2 /* Main.storyboard */; };
@@ -44,6 +46,8 @@
 /* Begin PBXFileReference section */
 		1B8657A4262B6AF7006E2263 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		1B8657A9262B6B1B006E2263 /* SearchEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchEngine.swift; sourceTree = "<group>"; };
+		1B8657AE262C958A006E2263 /* TabCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabCollectionViewCell.swift; sourceTree = "<group>"; };
+		1B8657B3262C9965006E2263 /* TabsCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabsCollectionViewController.swift; sourceTree = "<group>"; };
 		1BB83BE92613962F007498D2 /* Acme.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Acme.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BB83BEC2613962F007498D2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1BB83BEE2613962F007498D2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -139,6 +143,7 @@
 			children = (
 				1BB83BF726139633007498D2 /* LaunchScreen.storyboard */,
 				1BB83BF22613962F007498D2 /* Main.storyboard */,
+				1B8657AE262C958A006E2263 /* TabCollectionViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -148,6 +153,7 @@
 			children = (
 				1BB83C0F2613D5E6007498D2 /* BookmarksTableViewController.swift */,
 				1BB83C04261398E1007498D2 /* BrowserViewController.swift */,
+				1B8657B3262C9965006E2263 /* TabsCollectionViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -331,7 +337,9 @@
 				1B8657A5262B6AF7006E2263 /* String+Extension.swift in Sources */,
 				1BB83C5326163D83007498D2 /* URL+Extension.swift in Sources */,
 				1BB83C102613D5E6007498D2 /* BookmarksTableViewController.swift in Sources */,
+				1B8657AF262C958A006E2263 /* TabCollectionViewCell.swift in Sources */,
 				1BB83C5826163DC5007498D2 /* UIColor+Extension.swift in Sources */,
+				1B8657B4262C9965006E2263 /* TabsCollectionViewController.swift in Sources */,
 				1B8657AA262B6B1B006E2263 /* SearchEngine.swift in Sources */,
 				1BB83C05261398E1007498D2 /* BrowserViewController.swift in Sources */,
 				1BB83C152613DE1C007498D2 /* BookmarksController.swift in Sources */,

@@ -361,6 +361,19 @@ class BrowserViewController: UIViewController {
         }
     }
     
+    /// Presents BookmarksTableViewController and tells it which data source it should display. false = tabs, true = bookmarks
+    private func presentTabsCollectionViewController() {
+        
+        let storyboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        if let navVC = storyboard.instantiateViewController(identifier: "TabsNavigationControllerID") as? UINavigationController, let tabsVC = navVC.viewControllers.first as? TabsCollectionViewController {
+            tabsVC.bookmarksController = bookmarksController
+            tabsVC.newPageDelegate = self
+            tabsVC.bookmark = bookmark
+            navVC.modalPresentationStyle = .fullScreen
+            present(navVC, animated: true, completion: nil)
+        }
+    }
+        
     /// Reloads page
     @objc func reloadWebView() {
         webView.reload()
@@ -375,7 +388,7 @@ class BrowserViewController: UIViewController {
     
     /// Presents Tabs section
     @objc func switchTabs() {
-        presentBookmarksOrTabs(bookmarksMode: false)
+        presentTabsCollectionViewController()
     }
     
     /// Updates tabsButton image to reflect how many tabs are open
