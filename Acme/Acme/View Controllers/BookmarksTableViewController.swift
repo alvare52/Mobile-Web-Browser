@@ -63,7 +63,11 @@ class BookmarksTableViewController: UITableViewController {
     
     private func updateViews() {
         guard isViewLoaded else { return }
-        title = bookmarksMode ? "Bookmarks" : "Tabs"
+        if let count = bookmarksController?.bookmarks.count {
+            title = bookmarksMode ? "Bookmarks - \(count)" : "Tabs"
+        } else {
+            title = bookmarksMode ? "Bookmarks" : "Tabs"
+        }
     }
     
     override func viewDidLoad() {
@@ -82,6 +86,7 @@ class BookmarksTableViewController: UITableViewController {
         if bookmarksMode {
             bookmarksController.addBookmark(newBookmark: bookmark)
             tableView.reloadData()
+            updateViews()
         }
         
         // Open new tab
@@ -139,6 +144,7 @@ class BookmarksTableViewController: UITableViewController {
             
             if bookmarksMode {
                 bookmarksController?.deleteBookmark(row: indexPath.row)
+                updateViews()
             } else {
                 bookmarksController?.deleteTab(row: indexPath.row)
             }
