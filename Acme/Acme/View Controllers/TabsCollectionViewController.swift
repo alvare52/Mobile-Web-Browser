@@ -69,7 +69,10 @@ class TabsCollectionViewController: UICollectionViewController {
     
     /// DIsmisses screen
     @objc private func openNewTab() {
-        dismiss(animated: true, completion: nil)
+        guard let bookmarksController = bookmarksController, let bookmark = bookmark else { return }
+        openTab(url: .defaultURL)
+        bookmarksController.addTab(newTab: bookmark)
+        newPageDelegate?.didAddOrDeleteTab()
     }
     
     /// Dismisses view controller and opens a new tab or bookmark
@@ -77,6 +80,7 @@ class TabsCollectionViewController: UICollectionViewController {
         newPageDelegate?.didSelectUrl(url: url)
         doneTapped()
     }
+
     /*
     // MARK: - Navigation
 
@@ -102,6 +106,8 @@ class TabsCollectionViewController: UICollectionViewController {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TabCollectionViewCell", for: indexPath) as? TabCollectionViewCell else { return UICollectionViewCell() }
     
         cell.tab = bookmarksController?.tabs[indexPath.row]
+        cell.cellDeletionDelegate = self
+        cell.indexPath = indexPath
         
         return cell
     }
@@ -175,5 +181,14 @@ extension TabsCollectionViewController: UICollectionViewDelegateFlowLayout {
         let width = (collectionView.frame.width - horizontalInsets - itemSpacing) / itemsPerRow
         print("w = \(width)")
         return CGSize(width: width, height: width)
+    }
+}
+
+extension TabsCollectionViewController: CellDeletionDelegate {
+    
+    func deleteTabAtIndexPath(indexPath: IndexPath, urlTitle: String) {
+        bookmarksController?.deleteTab(row: indexPath.row, urlTitle: urlTitle)
+        collectionView.deleteItems(at: [indexPath])
+        newPageDelegate?.didAddOrDeleteTab()
     }
 }

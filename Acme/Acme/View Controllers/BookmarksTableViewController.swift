@@ -146,7 +146,7 @@ class BookmarksTableViewController: UITableViewController {
                 bookmarksController?.deleteBookmark(row: indexPath.row)
                 updateViews()
             } else {
-                bookmarksController?.deleteTab(row: indexPath.row)
+//                bookmarksController?.deleteTab(row: indexPath.row)
             }
 
             tableView.deleteRows(at: [indexPath], with: .fade)

@@ -7,6 +7,11 @@
 
 import UIKit
 
+protocol CellDeletionDelegate {
+    /// Tells TabCollectionViewController to delete cell at given tab
+    func deleteTabAtIndexPath(indexPath: IndexPath, urlTitle: String)
+}
+
 class TabCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Properties
@@ -18,6 +23,18 @@ class TabCollectionViewCell: UICollectionViewCell {
         return view
     }()
     
+    var deleteButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(UIImage(systemName: "xmark"), for: .normal)
+        button.tintColor = .black
+        button.backgroundColor = .white
+        return button
+    }()
+    
+    /// Used to tell TabCollectionViewController to delete cell
+    var cellDeletionDelegate: CellDeletionDelegate?
+    
     /// Holds  tab object that's passed in
     var tab: Bookmark? {
         didSet {
@@ -25,7 +42,7 @@ class TabCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    var row: Int?
+    var indexPath: IndexPath?
     
     /// UIImageView that displays a screenshot of tab
     var tabScreenShotImageView: UIImageView = {
@@ -84,6 +101,14 @@ class TabCollectionViewCell: UICollectionViewCell {
         tabTitleLabel.trailingAnchor.constraint(equalTo: customView.trailingAnchor).isActive = true
         tabTitleLabel.heightAnchor.constraint(equalTo: customView.heightAnchor, multiplier: 0.1).isActive = true
         
+        // Delete Button
+        customView.addSubview(deleteButton)
+        deleteButton.heightAnchor.constraint(equalTo: tabTitleLabel.heightAnchor, multiplier: 0.6).isActive = true
+        deleteButton.centerYAnchor.constraint(equalTo: tabTitleLabel.centerYAnchor).isActive = true
+        deleteButton.trailingAnchor.constraint(equalTo: customView.trailingAnchor, constant: -2).isActive = true
+        deleteButton.widthAnchor.constraint(equalTo: deleteButton.heightAnchor).isActive = true
+        deleteButton.addTarget(self, action: #selector(deleteTapped), for: .touchUpInside)
+        
         // Image View
         customView.addSubview(tabScreenShotImageView)
         tabScreenShotImageView.topAnchor.constraint(equalTo: tabTitleLabel.bottomAnchor).isActive = true
@@ -97,7 +122,12 @@ class TabCollectionViewCell: UICollectionViewCell {
         tabTitleLabel.text = tab.urlTitle
         let image = UIImage.loadImageFromDiskWith(fileName: "\(tab.urlTitle)") ?? UIImage(named: "AcmeIcon1024x1024")
         tabScreenShotImageView.image = image
-        
         // set icon?
+    }
+    
+    @objc private func deleteTapped() {
+        print("deleteTapped for row \(String(describing: indexPath))")
+        guard let indexPathToDelete = indexPath, let urlTitle = tab?.urlTitle else { return }
+        cellDeletionDelegate?.deleteTabAtIndexPath(indexPath: indexPathToDelete, urlTitle: urlTitle)
     }
 }

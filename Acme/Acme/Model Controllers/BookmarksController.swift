@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 class BookmarksController {
     
@@ -124,8 +125,9 @@ class BookmarksController {
     }
         
     /// Removes tab at given row and saves
-    func deleteTab(row: Int) {
+    func deleteTab(row: Int, urlTitle: String) {
         tabs.remove(at: row)
+        UIImage.deleteImage(urlTitle)
         saveTabsToPersistentStore()
     }
     
