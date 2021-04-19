@@ -36,7 +36,7 @@ class TabsCollectionViewController: UICollectionViewController {
         collectionView.backgroundColor = .systemGray6
         navigationController?.isToolbarHidden = false
         navigationController?.toolbar.barTintColor = .systemGray6
-        navigationController?.toolbar.clipsToBounds = true
+//        navigationController?.toolbar.clipsToBounds = true
         navigationController?.isNavigationBarHidden = true
         collectionView.register(TabCollectionViewCell.self, forCellWithReuseIdentifier: "TabCollectionViewCell")
         
@@ -186,8 +186,8 @@ extension TabsCollectionViewController: UICollectionViewDelegateFlowLayout {
 
 extension TabsCollectionViewController: CellDeletionDelegate {
     
-    func deleteTabAtIndexPath(indexPath: IndexPath, urlTitle: String) {
-        bookmarksController?.deleteTab(row: indexPath.row, urlTitle: urlTitle)
+    func deleteTabAtIndexPath(indexPath: IndexPath, bookmark: Bookmark) {
+        bookmarksController?.deleteTab(row: indexPath.row, bookmark: bookmark)
         collectionView.deleteItems(at: [indexPath])
         newPageDelegate?.didAddOrDeleteTab()
     }

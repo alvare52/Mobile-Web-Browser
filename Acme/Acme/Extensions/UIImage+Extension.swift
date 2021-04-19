@@ -17,6 +17,7 @@ extension UIImage {
             if savedTabImages.count > 100 {
                 savedTabImages.removeAll()
             }
+            print("savedTabImages = \(savedTabImages), count is \(savedTabImages.count)")
         }
     }
     
@@ -49,6 +50,7 @@ extension UIImage {
             savedTabImages[imageName] = image
         } catch let error {
             print("error saving file with error", error)
+            print("fileURL = \(fileURL)")
         }
 
     }
@@ -95,5 +97,49 @@ extension UIImage {
                 print("couldn't remove file at path", removeError)
             }
         }
+    }
+    
+    /// Fetches image at URL passed in and returns a UIImage (returns placeholder image if none exists)
+    static func fetchImage(with urlString: URL, completion: @escaping (UIImage?) -> Void = { _ in }) {
+
+        /// If there are any errors fetching an image, this image is returned instead
+        let defaultImage = UIImage(systemName: "square.on.square")
+
+        let baseURL = "https://s2.googleusercontent.com/s2/favicons?domain_url="
+        guard let url = URL(string: baseURL + urlString.absoluteString) else {
+            print("cant make url from passed in string")
+            completion(defaultImage)
+            return
+        }
+        
+        let http = url
+        let urlComponents = URLComponents(url: http, resolvingAgainstBaseURL: false)
+        guard let comps = urlComponents else {
+            print("cant make urlComponents")
+            completion(defaultImage)
+            return
+        }
+
+        var components = comps
+        components.scheme = "https"
+        guard let secureUrl = components.url else {
+            print("cant make secureUrl from http")
+            completion(defaultImage)
+            return
+        }
+        print("secureUrl = \(secureUrl)")
+        URLSession.shared.dataTask(with: secureUrl) { (data, _, error) in
+            if let error = error {
+                NSLog("Error fetching image: \(error)")
+                return
+            }
+            guard let data = data else {
+                NSLog("No data returned from data task")
+                completion(defaultImage)
+                return
+            }
+            let imageToReturn = UIImage(data: data)
+            completion(imageToReturn)
+        }.resume()
     }
 }

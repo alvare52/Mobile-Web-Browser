@@ -100,7 +100,7 @@ class BrowserViewController: UIViewController {
     
     /// Gives moreButton its menu by first checking which search engine option is selected. Selecting menu option will set new value for search engine key
     private func makeMenuForMoreButton() {
-        print("makeMenuForMoreButton")
+        
         let bingImage = searchEngine == .Bing ? UIImage(systemName: "checkmark") : nil
         let duckImage = searchEngine == .DuckDuckGo ? UIImage(systemName: "checkmark") : nil
         let googleImage = searchEngine == .Google ? UIImage(systemName: "checkmark") : nil
@@ -260,9 +260,10 @@ class BrowserViewController: UIViewController {
         print("BrowswerVC updateViews")
         forwardButton.isEnabled = webView.canGoForward
         backButton.isEnabled = webView.canGoBack
+        // TODO: try to add this right after a search is performed?
         guard let url = webView.url, let urlTitle = webView.title else { return }
         bookmark = Bookmark(url: url, urlTitle: urlTitle)
-        
+        print("bookmark now = \(bookmark.url), \(bookmark.urlTitle)")
         webView.takeSnapshot(with: nil) { (image, error) in
             if let error = error {
                 print("error taking snapshot, \(error)")
@@ -270,6 +271,18 @@ class BrowserViewController: UIViewController {
             }
             if let snapshotImage = image {
                 UIImage.saveImage(imageName: "\(urlTitle)", image: snapshotImage)
+            }
+        }
+                
+        UIImage.fetchImage(with: url) { (image) in
+            print("url given to fetchImage = \(url)")
+            // TODO: does this need to be done on the main queue if its just saving the image?
+            DispatchQueue.main.async {
+                print("image = \(String(describing: image))")
+                if let unwrappedImage = image {
+                    let name = "favicon-" + url.absoluteString.replacingOccurrences(of: "/", with: "-")
+                    UIImage.saveImage(imageName: name, image: unwrappedImage)
+                }
             }
         }
     }
@@ -298,7 +311,7 @@ class BrowserViewController: UIViewController {
             webView.stopLoading()
             return
         }
-        print("searchURL\(searchUrl)")
+        print("fallback searchURL\(searchUrl)")
         webView.load(URLRequest(url: searchUrl))
     }
     
@@ -346,12 +359,14 @@ class BrowserViewController: UIViewController {
         if searchTerm.contains("https") {
             lastSearch = searchTerm
             webView.load(URLRequest(url: URL(string: searchTerm) ?? .defaultURL))
+            print("directly going to url \(URL(string: searchTerm) ?? .defaultURL)")
             return
         }
         
         if let directUrl = URL(string: "https://www.\(searchTerm).com") {
             lastSearch = searchTerm
             webView.load(URLRequest(url: directUrl))
+            print("indirectly going to url \(directUrl)")
             return
         } else {
             fallBackSearch(searchTerm: searchTerm)
@@ -381,7 +396,7 @@ class BrowserViewController: UIViewController {
             tabsVC.newPageDelegate = self
             tabsVC.bookmark = bookmark
             navVC.modalPresentationStyle = .fullScreen
-            navVC.modalTransitionStyle = .flipHorizontal
+//            navVC.modalTransitionStyle = .flipHorizontal
             present(navVC, animated: true, completion: nil)
         }
     }
