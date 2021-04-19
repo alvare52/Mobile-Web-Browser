@@ -25,11 +25,14 @@ class TabCollectionViewCell: UICollectionViewCell {
         }
     }
     
+    var row: Int?
+    
     /// UIImageView that displays a screenshot of tab
     var tabScreenShotImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(named: "AcmeIcon1024x1024")
+//        imageView.image = UIImage(named: "AcmeIcon1024x1024")
+        imageView.backgroundColor = .black
         imageView.contentMode = .scaleAspectFill
         imageView.layer.masksToBounds = false
         imageView.clipsToBounds = true
@@ -41,7 +44,7 @@ class TabCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Tab"
-        label.backgroundColor = .orange//.white
+        label.backgroundColor = .white
         label.font = .systemFont(ofSize: 14)
         return label
     }()
@@ -90,8 +93,11 @@ class TabCollectionViewCell: UICollectionViewCell {
     }
     
     private func updateViews() {
-        print("updateViews")
         guard let tab = tab else { return }
         tabTitleLabel.text = tab.urlTitle
+        let image = UIImage.loadImageFromDiskWith(fileName: "\(tab.urlTitle)") ?? UIImage(named: "AcmeIcon1024x1024")
+        tabScreenShotImageView.image = image
+        
+        // set icon?
     }
 }

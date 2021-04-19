@@ -257,10 +257,21 @@ class BrowserViewController: UIViewController {
     
     /// Updates direction buttons and sets bookmark to webView.url and webView.title
     func updateViews() {
+        print("BrowswerVC updateViews")
         forwardButton.isEnabled = webView.canGoForward
         backButton.isEnabled = webView.canGoBack
         guard let url = webView.url, let urlTitle = webView.title else { return }
         bookmark = Bookmark(url: url, urlTitle: urlTitle)
+        
+        webView.takeSnapshot(with: nil) { (image, error) in
+            if let error = error {
+                print("error taking snapshot, \(error)")
+                return
+            }
+            if let snapshotImage = image {
+                UIImage.saveImage(imageName: "\(urlTitle)", image: snapshotImage)
+            }
+        }
     }
     
     override func viewDidLoad() {
@@ -370,6 +381,7 @@ class BrowserViewController: UIViewController {
             tabsVC.newPageDelegate = self
             tabsVC.bookmark = bookmark
             navVC.modalPresentationStyle = .fullScreen
+            navVC.modalTransitionStyle = .flipHorizontal
             present(navVC, animated: true, completion: nil)
         }
     }
