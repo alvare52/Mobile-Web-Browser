@@ -7,8 +7,6 @@
 
 import UIKit
 
-private let reuseIdentifier = "Cell"
-
 class TabsCollectionViewController: UICollectionViewController {
     
     // MARK: - Properties
@@ -27,29 +25,29 @@ class TabsCollectionViewController: UICollectionViewController {
     
     /// Opens up a new tab
     var newTabButton: UIBarButtonItem!
+
+    /// Identifier for custom collection view cells. "TabCollectionViewCell"
+    private let reuseIdentifier = "TabCollectionViewCell"
     
     // MARK: - View Life Cycle
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    /// Sets up tool bar and its buttons
+    private func setupToolBar() {
         
-        collectionView.backgroundColor = .systemGray6
+        // Tool Bar
         navigationController?.isToolbarHidden = false
         navigationController?.toolbar.barTintColor = .systemGray6
-//        navigationController?.toolbar.clipsToBounds = true
-        navigationController?.isNavigationBarHidden = true
-        collectionView.register(TabCollectionViewCell.self, forCellWithReuseIdentifier: "TabCollectionViewCell")
         
         // New Tab Button
         newTabButton = UIBarButtonItem(image: UIImage(systemName: "plus"),
                                         style: .plain,
                                         target: self,
-                                        action: #selector(openNewTab))
+                                        action: #selector(openNewTabTapped))
         newTabButton.tintColor = .customTintColor
         
         // Done Button
         doneButton = UIBarButtonItem(title: "Done",
-                                     style: .done,
+                                     style: .plain,
                                      target: self,
                                      action: #selector(doneTapped))
         doneButton.tintColor = .customTintColor
@@ -58,22 +56,33 @@ class TabsCollectionViewController: UICollectionViewController {
         let space = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
 
         toolbarItems = [space, newTabButton, space, doneButton]
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
-        
+        collectionView.backgroundColor = .systemGray6
+        navigationController?.isNavigationBarHidden = true
+        collectionView.register(TabCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        setupToolBar()
     }
 
+    // MARK: - Actions
+    
     /// DIsmisses screen
     @objc private func doneTapped() {
         dismiss(animated: true, completion: nil)
     }
     
-    /// DIsmisses screen
-    @objc private func openNewTab() {
+    /// Opens new tab by notifying BrowserViewController to load a new page and dismisses screen
+    @objc private func openNewTabTapped() {
         guard let bookmarksController = bookmarksController, let bookmark = bookmark else { return }
         openTab(url: .defaultURL)
         bookmarksController.addTab(newTab: bookmark)
         newPageDelegate?.didAddOrDeleteTab()
     }
+    
+    // MARK: - Helpers
     
     /// Dismisses view controller and opens a new tab or bookmark
     private func openTab(url: URL) {
@@ -81,35 +90,20 @@ class TabsCollectionViewController: UICollectionViewController {
         doneTapped()
     }
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
-    }
-    */
-
     // MARK: UICollectionViewDataSource
 
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-
-
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return bookmarksController?.tabs.count ?? 0
-    }
-
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TabCollectionViewCell", for: indexPath) as? TabCollectionViewCell else { return UICollectionViewCell() }
+        
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? TabCollectionViewCell else { return UICollectionViewCell() }
     
         cell.tab = bookmarksController?.tabs[indexPath.row]
         cell.cellDeletionDelegate = self
-        cell.indexPath = indexPath
         
         return cell
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return bookmarksController?.tabs.count ?? 0
     }
 
     // MARK: UICollectionViewDelegate
@@ -120,54 +114,24 @@ class TabsCollectionViewController: UICollectionViewController {
                 
         openTab(url: bookmarksController.tabs[indexPath.row].url)
     }
-    
-    /*
-    // Uncomment this method to specify if the specified item should be highlighted during tracking
-    override func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment this method to specify if the specified item should be selected
-    override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-    override func collectionView(_ collectionView: UICollectionView, shouldShowMenuForItemAt indexPath: IndexPath) -> Bool {
-        return false
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, canPerformAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
-        return false
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) {
-    
-    }
-    */
-
 }
+
+// MARK: - UICollectionViewDelegateFlowLayout
 
 extension TabsCollectionViewController: UICollectionViewDelegateFlowLayout {
     
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 10
-    }
-
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         insetForSectionAt section: Int) -> UIEdgeInsets {
         
         return UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 10)
     }
-
-    // MARK: Flow Layout
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 10
+    }
 
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
@@ -179,16 +143,26 @@ extension TabsCollectionViewController: UICollectionViewDelegateFlowLayout {
                                                layout: collectionViewLayout,
                                                minimumInteritemSpacingForSectionAt: 0)) * (itemsPerRow - 1)
         let width = (collectionView.frame.width - horizontalInsets - itemSpacing) / itemsPerRow
-        print("w = \(width)")
+
         return CGSize(width: width, height: width)
     }
 }
 
+// MARK: - CellDeletionDelegate
+
 extension TabsCollectionViewController: CellDeletionDelegate {
     
-    func deleteTabAtIndexPath(indexPath: IndexPath, bookmark: Bookmark) {
-        bookmarksController?.deleteTab(row: indexPath.row, bookmark: bookmark)
-        collectionView.deleteItems(at: [indexPath])
+    func deleteTabForCell(cell: TabCollectionViewCell, bookmark: Bookmark) {
+        
+        guard let path = collectionView.indexPath(for: cell), let controller = bookmarksController else { return }
+        
+        // delete from data source
+        controller.deleteTab(row: path.row, bookmark: bookmark)
+
+        // delete from collection view
+        collectionView.deleteItems(at: [path])
+
+        // notify browser screen to update its tab count
         newPageDelegate?.didAddOrDeleteTab()
     }
 }

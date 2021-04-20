@@ -126,10 +126,18 @@ class BookmarksController {
         
     /// Removes tab at given row and saves
     func deleteTab(row: Int, bookmark: Bookmark) {
+        
+        // delete from tabs array
         tabs.remove(at: row)
+        
+        // delete snapshot
         UIImage.deleteImage(bookmark.urlTitle)
+        
+        // delete favicon
         let name = "favicon-" + bookmark.url.absoluteString.replacingOccurrences(of: "/", with: "-")
         UIImage.deleteImage(name)
+        
+        // save
         saveTabsToPersistentStore()
     }
     
