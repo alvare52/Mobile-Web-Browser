@@ -27,15 +27,7 @@ class BookmarksTableViewController: UITableViewController {
     
     /// Controls which types of web pages to display
     var bookmarksController: BookmarksController?
-    
-    /// Tells tableview what type of web pages to display. False by default (using tabs)
-    /// Isn't an enum because there can only be 2 states
-    var bookmarksMode = false {
-        didSet {
-            updateViews()
-        }
-    }
-    
+        
     /// Tells BrowserViewController when a url has been selected
     var newPageDelegate: NewPageDelegate?
     
@@ -43,6 +35,8 @@ class BookmarksTableViewController: UITableViewController {
     
     /// Sets up Add and Done button in navigation bar
     private func setupNavBar() {
+        
+        title = "Bookmarks"
         
         // Add
         addButton = UIBarButtonItem(title: "",
@@ -60,20 +54,10 @@ class BookmarksTableViewController: UITableViewController {
                                                             action: #selector(doneTapped))
         navigationItem.rightBarButtonItem?.tintColor = .customTintColor
     }
-    
-    private func updateViews() {
-        guard isViewLoaded else { return }
-        if let count = bookmarksController?.bookmarks.count {
-            title = bookmarksMode ? "Bookmarks - \(count)" : "Tabs"
-        } else {
-            title = bookmarksMode ? "Bookmarks" : "Tabs"
-        }
-    }
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavBar()
-        updateViews()
     }
     
     // MARK: - Actions
@@ -82,19 +66,8 @@ class BookmarksTableViewController: UITableViewController {
     @objc func addButtonTapped() {
         guard let bookmarksController = bookmarksController, let bookmark = bookmark else { return }
         
-        // Add new bookmark
-        if bookmarksMode {
-            bookmarksController.addBookmark(newBookmark: bookmark)
-            tableView.reloadData()
-            updateViews()
-        }
-        
-        // Open new tab
-        else {
-            openTabOrBookmark(url: .defaultURL)
-            bookmarksController.addTab(newTab: bookmark)
-            newPageDelegate?.didAddOrDeleteTab()
-        }
+        bookmarksController.addBookmark(newBookmark: bookmark)
+        tableView.reloadData()
     }
     
     /// Dismisses view controller
@@ -118,23 +91,16 @@ class BookmarksTableViewController: UITableViewController {
 
         guard let bookmarksController = bookmarksController else { return cell }
         
-        // Bookmarks
-        if bookmarksMode {
-            let bookmark = bookmarksController.bookmarks[indexPath.row]
-            cell.imageView?.tintColor = .customTintColor
-            cell.textLabel?.text = "\(bookmark.urlTitle)"
-            cell.imageView?.image = UIImage(systemName: "book")
-            return cell
-        }
+        let bookmark = bookmarksController.bookmarks[indexPath.row]
+        cell.imageView?.tintColor = .customTintColor
+        cell.textLabel?.text = "\(bookmark.urlTitle)"
         
-        // Tabs
-        else {
-            let tab = bookmarksController.tabs[indexPath.row]
-            cell.imageView?.tintColor = .customTintColor
-            cell.textLabel?.text = "\(tab.urlTitle)"
-            cell.imageView?.image = UIImage(systemName: "square.on.square")
-            return cell
-        }
+        let name = "favicon-" + bookmark.url.absoluteString.replacingOccurrences(of: "/", with: "-")
+        let favicon = UIImage.loadImageFromDiskWith(fileName: name) ?? UIImage(systemName: "book")
+        cell.imageView?.image = favicon
+        
+        return cell
+        
     }
     
     // Override to support editing the table view.
@@ -142,13 +108,7 @@ class BookmarksTableViewController: UITableViewController {
                 
         if editingStyle == .delete {
             
-            if bookmarksMode {
-                bookmarksController?.deleteBookmark(row: indexPath.row)
-                updateViews()
-            } else {
-//                bookmarksController?.deleteTab(row: indexPath.row)
-            }
-
+            bookmarksController?.deleteBookmark(row: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             newPageDelegate?.didAddOrDeleteTab()
         }
@@ -158,17 +118,13 @@ class BookmarksTableViewController: UITableViewController {
         
         guard let bookmarksController = bookmarksController else { return }
         
-        let url = bookmarksMode ? bookmarksController.bookmarks[indexPath.row].url : bookmarksController.tabs[indexPath.row].url
+        let url = bookmarksController.bookmarks[indexPath.row].url
         
         openTabOrBookmark(url: url)
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        if bookmarksMode {
-            return bookmarksController?.bookmarks.count ?? 0
-        }
-        
-        return bookmarksController?.tabs.count ?? 0
+
+        return bookmarksController?.bookmarks.count ?? 0
     }
 }

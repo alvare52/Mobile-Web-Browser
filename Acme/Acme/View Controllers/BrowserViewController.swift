@@ -374,20 +374,19 @@ class BrowserViewController: UIViewController {
         }
     }
     
-    /// Presents BookmarksTableViewController and tells it which data source it should display. false = tabs, true = bookmarks
-    private func presentBookmarksOrTabs(bookmarksMode: Bool) {
+    /// Presents BookmarksTableViewController with a regular modal segue
+    private func presentBookmarksTableViewController() {
         
         let storyboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         if let navVC = storyboard.instantiateViewController(identifier: "BookmarksNavigationControllerID") as? UINavigationController, let bookmarksVC = navVC.viewControllers.first as? BookmarksTableViewController {
             bookmarksVC.bookmarksController = bookmarksController
-            bookmarksVC.bookmarksMode = bookmarksMode
             bookmarksVC.newPageDelegate = self
             bookmarksVC.bookmark = bookmark
             present(navVC, animated: true, completion: nil)
         }
     }
     
-    /// Presents BookmarksTableViewController and tells it which data source it should display. false = tabs, true = bookmarks
+    /// Presents TabsCollectionViewController with a full screen modal segue
     private func presentTabsCollectionViewController() {
         
         let storyboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
@@ -396,7 +395,6 @@ class BrowserViewController: UIViewController {
             tabsVC.newPageDelegate = self
             tabsVC.bookmark = bookmark
             navVC.modalPresentationStyle = .fullScreen
-//            navVC.modalTransitionStyle = .flipHorizontal
             present(navVC, animated: true, completion: nil)
         }
     }
@@ -433,7 +431,7 @@ class BrowserViewController: UIViewController {
     
     /// Presents Bookmarks section
     @objc func viewBookmarks() {
-        presentBookmarksOrTabs(bookmarksMode: true)
+        presentBookmarksTableViewController()
     }
 }
 
