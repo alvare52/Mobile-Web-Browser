@@ -55,7 +55,7 @@ class TabsCollectionViewController: UICollectionViewController {
         // Spacer
         let space = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
 
-        toolbarItems = [space, newTabButton, space, doneButton]
+        toolbarItems = [newTabButton, space, doneButton]
     }
     
     override func viewDidLoad() {

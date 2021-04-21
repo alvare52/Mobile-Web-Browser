@@ -141,7 +141,7 @@ class TabCollectionViewCell: UICollectionViewCell {
         customView.addSubview(faviconImageView)
         faviconImageView.centerYAnchor.constraint(equalTo: faviconContainerView.centerYAnchor).isActive = true
         faviconImageView.centerXAnchor.constraint(equalTo: faviconContainerView.centerXAnchor).isActive = true
-        faviconImageView.heightAnchor.constraint(equalTo: faviconContainerView.heightAnchor, multiplier: 0.7).isActive = true
+        faviconImageView.heightAnchor.constraint(equalTo: faviconContainerView.heightAnchor, multiplier: 0.6).isActive = true
         faviconImageView.widthAnchor.constraint(equalTo: faviconImageView.heightAnchor).isActive = true
         
         // Delete Button
