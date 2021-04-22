@@ -1,4 +1,4 @@
-# Mobile Web Browser <img src="Gifs/AcmeIcon1024x1024.png" width="30"/> 
+# Mobile Web Browser 
 
 Simple iOS web browser using WKWebView framework.
 
@@ -7,9 +7,9 @@ Simple iOS web browser using WKWebView framework.
 <img src="Gifs/AcmeGIF1.gif" width="250"/>&emsp;&emsp;<img src="Gifs/AcmeGIF2.gif" width="250"/>
 
 ## Features
-- Search engine options
+- Search engine options (Bing, DuckDuckGo, Google, or Yahoo)
+- Multiple tabs and basic navigation
 - Save bookmarks
-- Multiple tabs
 
 ## Frameworks
 - WKWebView
