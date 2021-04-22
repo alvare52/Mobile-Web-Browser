@@ -1,4 +1,4 @@
-<img src="AcmeIcon1024x1024.png" width="20"/> # Mobile Web Browser
+# <img src="Gifs/AcmeIcon1024x1024.png" width="20"/> Mobile Web Browser
 
 Simple iOS web browser using WKWebView framework.
 
