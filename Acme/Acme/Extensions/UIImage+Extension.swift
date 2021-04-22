@@ -17,7 +17,6 @@ extension UIImage {
             if savedTabImages.count > 100 {
                 savedTabImages.removeAll()
             }
-            print("savedTabImages = \(savedTabImages), count is \(savedTabImages.count)")
         }
     }
     
@@ -127,7 +126,7 @@ extension UIImage {
             completion(defaultImage)
             return
         }
-        print("secureUrl = \(secureUrl)")
+
         URLSession.shared.dataTask(with: secureUrl) { (data, _, error) in
             if let error = error {
                 NSLog("Error fetching image: \(error)")

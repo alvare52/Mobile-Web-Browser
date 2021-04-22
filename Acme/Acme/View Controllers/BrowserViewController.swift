@@ -257,13 +257,13 @@ class BrowserViewController: UIViewController {
     
     /// Updates direction buttons and sets bookmark to webView.url and webView.title
     func updateViews() {
-        print("BrowswerVC updateViews")
+        
         forwardButton.isEnabled = webView.canGoForward
         backButton.isEnabled = webView.canGoBack
-        // TODO: try to add this right after a search is performed?
+        
         guard let url = webView.url, let urlTitle = webView.title else { return }
         bookmark = Bookmark(url: url, urlTitle: urlTitle)
-        print("bookmark now = \(bookmark.url), \(bookmark.urlTitle)")
+        
         webView.takeSnapshot(with: nil) { (image, error) in
             if let error = error {
                 print("error taking snapshot, \(error)")
@@ -275,10 +275,8 @@ class BrowserViewController: UIViewController {
         }
                 
         UIImage.fetchImage(with: url) { (image) in
-            print("url given to fetchImage = \(url)")
-            // TODO: does this need to be done on the main queue if its just saving the image?
+            
             DispatchQueue.main.async {
-                print("image = \(String(describing: image))")
                 if let unwrappedImage = image {
                     let name = "favicon-" + url.absoluteString.replacingOccurrences(of: "/", with: "-")
                     UIImage.saveImage(imageName: name, image: unwrappedImage)
@@ -304,14 +302,15 @@ class BrowserViewController: UIViewController {
         
     /// Takes in an invalid search and performs a search using selected search engine + search term
     private func fallBackSearch(searchTerm: String) {
+
         let cleanTerm = searchTerm.replacingOccurrences(of: " ", with: "+")
-        print("fallBackSearch, searchEngineString = \(searchEngineString), cleanTerm = \(cleanTerm)")
+
         guard let searchUrl = URL(string: searchEngineString + cleanTerm) else {
             print("invalid search, exitting")
             webView.stopLoading()
             return
         }
-        print("fallback searchURL\(searchUrl)")
+
         webView.load(URLRequest(url: searchUrl))
     }
     
