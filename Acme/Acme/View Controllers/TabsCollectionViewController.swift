@@ -25,6 +25,9 @@ class TabsCollectionViewController: UICollectionViewController {
     
     /// Opens up a new tab
     var newTabButton: UIBarButtonItem!
+    
+    /// Opens current tab in Safari
+    var openInSafariButton: UIBarButtonItem!
 
     /// Identifier for custom collection view cells. "TabCollectionViewCell"
     private let reuseIdentifier = "TabCollectionViewCell"
@@ -37,6 +40,13 @@ class TabsCollectionViewController: UICollectionViewController {
         // Tool Bar
         navigationController?.isToolbarHidden = false
         navigationController?.toolbar.barTintColor = .systemGray6
+        
+        // Open in Safari
+        openInSafariButton = UIBarButtonItem(image: UIImage(systemName: "safari"),
+                                        style: .plain,
+                                        target: self,
+                                        action: #selector(openTabInSafari))
+        openInSafariButton.tintColor = .customTintColor
         
         // New Tab Button
         newTabButton = UIBarButtonItem(image: UIImage(systemName: "plus"),
@@ -55,7 +65,7 @@ class TabsCollectionViewController: UICollectionViewController {
         // Spacer
         let space = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
 
-        toolbarItems = [newTabButton, space, doneButton]
+        toolbarItems = [openInSafariButton, space, newTabButton, space, doneButton]
     }
     
     override func viewDidLoad() {
@@ -82,6 +92,16 @@ class TabsCollectionViewController: UICollectionViewController {
         newPageDelegate?.didAddOrDeleteTab()
     }
     
+    /// Opens currently opened tab in Safari
+    @objc private func openTabInSafari() {
+        
+        // get tab at index 0 (if it exists)
+        guard let currentTabUrl = bookmarksController?.tabs.first?.url else { return }
+        
+        // open in safari
+        UIApplication.shared.open(currentTabUrl)
+    }
+    
     // MARK: - Helpers
     
     /// Dismisses view controller and opens a new tab or bookmark
@@ -98,6 +118,10 @@ class TabsCollectionViewController: UICollectionViewController {
     
         cell.tab = bookmarksController?.tabs[indexPath.row]
         cell.cellDeletionDelegate = self
+        
+        if indexPath.row == 0 {
+            cell.highLight()
+        }
         
         return cell
     }

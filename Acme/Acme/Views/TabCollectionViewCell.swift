@@ -186,4 +186,12 @@ class TabCollectionViewCell: UICollectionViewCell {
         guard let tab = tab else { return }
         cellDeletionDelegate?.deleteTabForCell(cell: self, bookmark: tab)
     }
+    
+    // MARK: - Helpers
+    
+    /// Highlights cell to show that it's the currently selected tab
+    func highLight() {
+        layer.borderWidth = 2
+        layer.borderColor = UIColor.customTintColor.cgColor
+    }
 }
